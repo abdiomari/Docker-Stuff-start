@@ -1,0 +1,27 @@
+version: '3'
+services:
+      my-app:
+        image: node:13-alpine
+        ports:
+          - 3000:3000
+        environment:
+          - MONGO_DB_USERNAME=admin
+          - MONGO_DB_PWD=password
+        working_dir: /docker-demo-app/app
+        command: ["node","server.js"]      
+      mongodb:
+        image: mongo
+        ports:
+          - 27017:27017
+        environment:
+          - MONGO_INITDB_ROOT_USERNAME=admin
+          - MONGO_INITDB_ROOT_PASSWORD=password
+        
+      mongo-express:
+        image: mongo-express
+        ports:
+          - 8081:8081
+        environment:
+         - ME_CONFIG_MONGODB_ADMINUSERNAME=admin
+         - ME_CONFIG_MONGODB_ADMINPASSWORD=password
+         - ME_CONFIG_MONGODB_SERVER=mongodb
