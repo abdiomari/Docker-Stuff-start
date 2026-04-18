@@ -1,6 +1,4 @@
-Here's a clean, professional, and beginner-friendly **README.md** for **Project 4: Multi-stage builds for a Node.js App**.
 
-```markdown
 # Project 4: Multi-Stage Docker Build with Node.js
 
 This project demonstrates how to use **multi-stage Docker builds** to create optimized, production-ready Docker images for a Node.js application.
