@@ -1,6 +1,6 @@
 # using flask to build a simple app that uses mysql db
 
-from flask import flask
+from flask import Flask
 import mysql.connector
 import time
 import os
@@ -13,7 +13,7 @@ def get_db_connection(retries=5, delay=5):
             connection = mysql.connector.connect(
                 host='db',
                 user='root',
-                password=os.getenv("MYSQL_ROOT_PASS", "example"),
+                password=os.getenv("MYSQL_ROOT_PASSWORD", "example"),
                 database=os.getenv("MYSQL_DATABASE", "test_db")
             )
             print("Connected to MySQL")

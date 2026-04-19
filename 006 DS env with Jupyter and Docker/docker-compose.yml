@@ -1,0 +1,14 @@
+version: '3.9'
+
+services:
+  jupyter:
+    image: jupyter/scipy-notebook:latest
+    container_name: jupyter-ds
+    ports:
+      - "8888:8888"
+    volumes:
+      - ./notebooks:/home/jovyan/work
+    environment:
+      - JUPYTER_ENABLE_LAB=yes
+      - RESTARTABLE=yes
+    restart: unless-stopped
