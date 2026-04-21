@@ -1,0 +1,13 @@
+version: '3.8'
+
+services:
+  api:
+    build: .
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./app:/app/app   # live code reload (disable in production)
+      - ./models:/app/models
+    environment:
+      - MODEL_PATH=/app/models/model.pkl
+    command: uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
