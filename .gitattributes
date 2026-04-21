@@ -1,0 +1,7 @@
+# Mark a file as a specific language
+Dockerfile linguist-language=Dockerfile
+*.py linguist-language=python
+
+# Exclude vendored/generated files from stats
+static/* linguist-vendored
+templates/* linguist-generated
