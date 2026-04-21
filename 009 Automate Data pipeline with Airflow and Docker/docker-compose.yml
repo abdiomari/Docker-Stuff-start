@@ -1,0 +1,63 @@
+x-airflow-common: &airflow-common
+  image: apache/airflow:2.8.1
+  environment:
+    AIRFLOW__CORE__EXECUTOR: LocalExecutor
+    AIRFLOW__DATABASE__SQL_ALCHEMY_CONN: postgresql+psycopg2://airflow:airflow@postgres/airflow
+    AIRFLOW__CORE__FERNET_KEY: 'FB0o_zt4e3ZiqPcVGdP_pC8BmOqnwGFxU-qmFq5Vqy4='
+    AIRFLOW__WEBSERVER__RBAC: 'True'
+    AIRFLOW__CORE__LOAD_EXAMPLES: 'False'   # Avoid clutter
+    AIRFLOW__CORE__DAGS_ARE_PAUSED_AT_CREATION: 'False'
+  volumes: 
+    - ./dags:/opt/airflow/dags
+  depends_on:
+    postgres:
+      condition: service_healthy
+  restart: always
+
+services:
+  postgres:
+    image: postgres:13
+    environment:
+      POSTGRES_USER: airflow
+      POSTGRES_PASSWORD: airflow
+      POSTGRES_DB: airflow
+    ports:
+      - "5433:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD", "pg_isready", "-U", "airflow"]
+      interval: 10s
+      timeout: 30s
+      retries: 5
+      start_period: 30s
+  init:
+    <<: *airflow-common
+    depends_on:
+      postgres:
+        condition: service_healthy
+    command: >
+      bash -c "
+        airflow db init &&
+        airflow users create --username admin --password admin --firstname Admin --lastname User --role Admin --email admin@example.com
+      "
+    restart: "no"
+  
+  webserver:
+    <<: *airflow-common
+    depends_on:
+      init:
+        condition: service_completed_successfully
+    ports:
+      - "8080:8080"
+    command: webserver
+
+  scheduler:
+    <<: *airflow-common
+    depends_on:
+      init:
+        condition: service_completed_successfully
+    command: scheduler
+
+volumes:
+  postgres_data:
